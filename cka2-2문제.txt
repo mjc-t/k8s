@@ -1,0 +1,54 @@
+# Q9. CNI install
+
+```
+Install and configure a Container Network Interface (CNI) that satisfies the following conditions.
+You may choose one of the following options:
+
+- Flannel using the manifest
+  <https://github.com/flannel-io/flannel/releases/download/v0.26.1/kube-flannel.yml>
+
+- Calico using the manifest
+  <https://raw.githubusercontent.com/projectcalico/calico/v3.29.2/manifests/tigera-operator.yaml>
+
+The chosen CNI must allow:
+
+- Pod-to-Pod communication
+- NetworkPolicy enforcement
+- Must be installed using manifest files (do not use Helm)
+
+다음 조건을 만족하는 CNI(Container Network Interface)를 설치하고 구성하세요.
+아래 옵션 중 **하나를 선택하여** 설치할 수 있습니다:
+
+- Flannel (매니페스트 사용)
+  <https://github.com/flannel-io/flannel/releases/download/v0.26.1/kube-flannel.yml>
+
+- Calico (매니페스트 사용)
+  <https://raw.githubusercontent.com/projectcalico/calico/v3.29.2/manifests/tigera-operator.yaml>
+
+선택한 CNI는 반드시 다음 조건을 만족해야 합니다:
+
+- Pod 간 통신이 가능해야 함
+- NetworkPolicy를 지원해야 함
+- Helm을 사용하지 말고 매니페스트 파일을 사용하여 설치해야 함
+```
+
+---
+
+이 문제에서는, CNI 를 두개 다 설치하라는 것이 아니라 다음 조건을 만족하는 CNI를 선택해서 설치하라는 것
+
+문제에 “NetworkPolicy를 지원해야 한다” 라고 되어 있음 → 무조건 Calico
+단순히 Pod 간 통신만 되게 해라 → Flannel이 빠르고 편함
+===
+# Q2. NodePort
+
+- Reconfigure the existing deployment front-end in namespace spline-reticulator to expose 80/tcp of the existing container nginx.
+- Create a new service named front-end-svc exposing the container port 80/tcp
+- configure the new service to also expose the individual pod via a NodePort.
+
+---
+
+환경설정
+
+kubectl create ns spline-reticulator
+
+kubectl create deploy front-end --image=nginx --namespace=spline-reticulator
