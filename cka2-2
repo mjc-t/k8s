@@ -1,0 +1,13 @@
+# Q2. NodePort
+
+- Reconfigure the existing deployment **front-end** in namespace **spline-reticulator** to expose **80/tcp** of the existing container **nginx**.
+- Create a new service named **front-end-svc** exposing the container port **80/tcp**
+- configure the new service to also expose the individual pod via a **NodePort**.
+
+---
+
+환경설정
+
+kubectl create ns spline-reticulator
+
+kubectl create deploy front-end --image=nginx --namespace=spline-reticulator
