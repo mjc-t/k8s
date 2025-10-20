@@ -1,0 +1,33 @@
+Q3. Sidecar
+Update the existing deployment synergy-leverager, adding a co-located container named sidecar using the busybox:stable image to the existing pod.
+The new co-located container has to run the following command: /bin sh -c “tail -n+1 -f /var/log/synergy-everger.log”. Use a volume mounted at /var/log to make the log file synergy-leverager.log available to the co-located container.
+환경 설정
+kubectl create deploy synergy-leverager --image=nginx --dry-run=client -o yaml > synergy-leverager.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: synergy-leverager
+  name: synergy-leverager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: synergy-leverager
+  template:
+    metadata:
+      labels:
+        app: synergy-leverager
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        volumeMounts:
+        - name: log-volume
+          mountPath: /var/log
+      volumes:
+      - name: log-volume
+        emptyDir: {}
+​
+kubectl apply -f synergy-leverager.yaml
