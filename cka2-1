@@ -1,0 +1,16 @@
+# Q1. HPA
+
+- Create a **Horizontal Pod Scaler(HPA)** named **apache-server** in the **auto-scale** namespace. The HPA must target existing **deployment** called **apache-server** in the **auto-scale** namespace.
+- Set the HPA to aim for **50 CPU** usage per pod. Configure it to have **at least 1 pod** and at **max 4 pod.**
+- Also set the **downscale stabilization window** to **30** seconds. (안정화 시간: 30초)
+
+---
+
+환경 설정
+
+1. kubectl create namespace autoscale
+2. vi apache-server-deployment.yaml
+    1. **kubectl create deploy apache-server --image=apache -n autoscale**
+3. kubectl apply -f apache-server-deployment.yaml
+4. kubectl get deployment -n autoscale
+5. kubectl describe deployment apache-server -n autoscale
