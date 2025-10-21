@@ -1,0 +1,13 @@
+# Q6. ArgoCD Install
+
+- Install ArgoCD in the cluster by performing the following tasks: Add the official **Argo CD Helm repository** with the name **argo**.
+- Generate a **template of the ArgoCD Helm Chart version 7.7.3** for the **argocd** namespace and save it to **~/argo-helm.yaml**. Configure the chart to **not install CRDS**
+- Note - The Argo CD CRDs have already been pre-installed in the cluster.
+
+---
+
+환경 설정
+
+kubectl apply -k https://github.com/argoproj/argo-cd/manifests/crds\?ref\=stable
+
+kubectl get crd | grep argoproj
