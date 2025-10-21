@@ -1,0 +1,5 @@
+# Q5. StorageClass
+
+- First, create a new StorageClass named **local-path** for existing **provisioner** named **rancer.io/local-path**. Set the **volume binding mode** to **WaitForFirstConsumer**.
+- Note - Not setting the volume binding mode or setting it to anything other than WaitForFirstConsumer may result in reduced score. Next, Configure the StorageClass local-path as the **defaultStorageClass**.
+- Note - Do not modify any existing Deployments or PersistentVolumeClaims. Failure to do so may result in a reduced score.
