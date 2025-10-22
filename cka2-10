@@ -1,0 +1,50 @@
+You manage a WordPress application. Some pods are not up and running.
+Adjust all Pod resource requests as follows:
+
+Divide node resources evenly across all 3 pods.
+
+Give each Pod a fair share of CPU and memory.
+
+Add enough overhead to keep the node stable.
+
+Note - Use exact same requests for both containers and init containers.
+Scale down the wordpress deployment to 0 replicas while updating the resource requests.
+
+After updates, confirm: WordPress keeps 3 replicas.
+All Pods are running and ready.
+===========================
+환경 설정
+
+vi wordpress-deploy.yaml
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: wordpress
+  template:
+    metadata:
+      labels:
+        app: wordpress
+    spec:
+      initContainers:
+      - name: init-wordpress
+        image: busybox
+        command: ["sh", "-c", "echo Intializing && sleep 5"]
+      containers:
+      - name: wordpress
+        image: wordpress:latest
+        ports:
+        - containerPort: 80
+```
+
+kubectl apply -f wordpress-deploy.yaml
+
+controlplane:~$ kubectl get deploy(시간이 약간 소요)
+NAME        READY   UP-TO-DATE   AVAILABLE   AGE
+wordpress   3/3     3            3           63s
