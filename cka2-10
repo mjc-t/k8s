@@ -48,3 +48,6 @@ kubectl apply -f wordpress-deploy.yaml
 controlplane:~$ kubectl get deploy(시간이 약간 소요)
 NAME        READY   UP-TO-DATE   AVAILABLE   AGE
 wordpress   3/3     3            3           63s
+===
+답안 중 일부
+kubectl patch deployment wordpress -p '{"spec": {"template": {"spec": {"initContainers": [{ "init-wordpress", "resources": {"requests": {"cpu": "1000m", "memory": "1Gi"}}}\]}}}}
