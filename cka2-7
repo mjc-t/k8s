@@ -1,0 +1,77 @@
+# Q7. PV 복구
+
+```bash
+문제
+A **MariaDB** Deployment in the **mariadb** namespace has been deleted by mistake.
+Your task is to restore the Deployment ensuring data persistence. Follow the steps:
+
+• Create a **PersistentVolumeClaim** (PVC) named mariadb in the mariadb namespace
+  with the following specifications:
+  Storage **250Mi**
+
+• Note - You must use the existing retained PersistentVolume (PV).
+  There is only one existing PersistentVolume.
+  Edit the MariaDB Deployment file located at ~/**mariadb-deployment.yaml**
+  to use the **PVC** you created in the previous step.
+  **Apply the updated Deployment file** to the cluster.
+  
+기존 pv가 retain이면,pv를 보고 호환되면 pvc 생성. 이때, deployment에서 사용하는 pvc명 동일하게 써도 됨. 없으면 deployment에 추가합니다.
+```
+
+---
+
+환경 설정
+
+kubectl create namespace mariadb
+
+vi mariadb-deployment.yaml
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+  namespace: mariadb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+      - name: mariadb
+        image: mariadb:latest
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "password"
+        ports:
+        - containerPort: 3306
+```
+
+vi mariadb-pv.yaml
+
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mariadb-pv
+spec:
+  capacity:
+    storage: 300Mi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: standard
+  hostPath:
+    path: "/tmp/mariadb-data"
+```
+
+kubectl apply -f mariadb-pv.yaml
+
+kubectl get pv -n mariadb
+
+kubectl get deploy -n mariadb
