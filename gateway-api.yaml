@@ -11,6 +11,6 @@ spec:
     hostname: gateway.web.k8s.local
     tls:
       mode: Terminate
-	    certificateRefs:
-		  - kind: Secret
-			  name: web-tls
+      certificateRefs:
+      - kind: Secret
+        name: web-tls
