@@ -1,0 +1,10 @@
+Ingress
+Question 13
+Create a new ingress resource named echo in echo-sound namespace.
+With the following tasks:
+Espose the deployment with a service named echo-service on http://example.org/echo using Service port 8080 type=NodePort.
+The availability of Service echo-service can be checked using the following command which should return 200:
+curl -o /dev/null -s -w “%{http_code}\n” http://example.org/echo
+환경설정
+kubectl create ns echo-sound
+kubectl create deploy echoserver-deployment -n echo-sound --image=tomcat
