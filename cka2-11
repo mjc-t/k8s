@@ -1,0 +1,25 @@
+# Q11. Debian Package
+
+```
+Complete these tasks to prepare the system for Kubernetes:
+Set up **cri-dockerd**:
+
+- **Install the Debian package**:
+  ~/cri-dockerd_0.3.9.3-0.ubuntu-focal_amd64.deb
+- **Start** the cri-dockerd service.
+- **Enable** and start the systemd service for cri-dockerd.
+
+Configure these **system parameters**:
+
+- **Set net.bridge.bridge-nf-call-iptables to 1.**
+- **Set net.ipv6.conf.all.forwarding to 1.**
+- **Set net.ipv4.ip_forward to 1.**
+```
+
+---
+
+환경 설정
+
+sudo apt update
+
+curl -L -o cri-dockerd_0.3.9.3-0.ubuntu-focal_amd64.deb https://github.com/Mirantis/cri-dockerd/releases/download/v0.3.9/cri-dockerd_0.3.9.3-0.ubuntu-focal_amd64.deb
