@@ -1,5 +1,5 @@
 Ingress
-Question 13
+Question K7
 Create a new ingress resource named echo in echo-sound namespace.
 With the following tasks:
 Espose the deployment with a service named echo-service on http://example.org/echo using Service port 8080 type=NodePort.
