@@ -1,0 +1,7 @@
+Q12. Custom CRD
+List all custom from cert manager and store it in custom-crd.txt.
+Get the subject field from the cert manager and store it in cert-manager-subject.txt.
+========
+cert-manager는 이미 설치
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml
+kubectl get crd | grep cert
