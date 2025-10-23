@@ -1,0 +1,17 @@
+# 9. NetworkPolicy
+
+Question.
+
+There are 2 deploymnet, **Frontend and Backend**
+Frontend will be in **frontend** namespace and Backend will be in **backend** namespace.
+Task:
+Create a **network policy** to have interaction between frontend and backend deployment.
+The network policy has to be least permissive.
+---
+
+환경설정
+
+kubectl create ns backend
+kubectl create deploy backend -n backend --image=nginx
+kubectl create ns frontend
+kubectl create deploy frontend -n frontend --image=nginx
