@@ -26,4 +26,5 @@ kubectl create ns nginx-static
 kubectl create deploy nginx-static --image=nginx -n nginx-static 
 
 vi configmap.yaml
-name: nginx-static
+name: nginx-config
+namespace: nginx-static
