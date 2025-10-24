@@ -28,3 +28,6 @@ kubectl create deploy nginx-static --image=nginx -n nginx-static
 vi configmap.yaml
 name: nginx-config
 namespace: nginx-static
+
+kubectl apply -f configmap.yaml
+kubectl expose deploy nginx-static --name=nginx-static -n nginx-static --port=80
