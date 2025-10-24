@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx2
+spec:
+  containers:
+  - image: nginx
+    name: nginx2
+  nodeName: node01
+  tolerations:
+  - key: "IT"
+    operator: "Equal"
+    value: "Kiddie"
+    effect: "NoSchedule"
