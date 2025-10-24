@@ -1,0 +1,283 @@
+문제 1. HPA
+1. 검색: hpa(behavior)
+2. kubectl autoscale deploy apache-server \
+   --namespace=autoscale --cpu-percent=50 \
+   --min=1 --max=4 --dry-run=client -o yaml > hpa.yaml
+3. vi hpa.yaml(붙여넣기 behavior 포함 3줄-라인 조심)
+4. kubectl apply -f hpa.yaml
+
+확인: kubectl get hpa -n autoscale
+===
+문제 2. NodePort
+1. kubectl get deploy front-end -n spline-reticulator
+2. kubectl get deploy front-end -n spline-reticulator \
+   -o yaml > front-end.yaml
+3. 검색: nodeport(첫번째 박스: ports 포함 3줄)
+4. vi front-end.yaml
+	ports:
+    - containerPort: 80
+      protocol: TCP
+5. kubectl apply -f front-end.yaml 
+6. kubectl describe deploy front-end -n spline-reticulator \
+   | grep -i port
+7. kubectl expose deploy front-end -n spline-reticulator \
+   --name=front-end-svc --type=NodePort
+   
+확인 kubectl get svc -n spline-reticulator
+===
+문제 3
+1. 검색: sidecar -> logging architecture 선택
+	(3번째 그림 밑 2번째 박스)
+2. kubectl get deploy synergy-leverager
+3. kubectl get deploy synergy-leverager -o yaml > sidecar.yaml
+4. vi sidecar.yaml
+   (volumes 포함 3줄 그대로, 6줄 복사, name, image, args 수정)
+5. kubectl apply -f sidecar.yaml
+6. kubectl get deploy synergy-leverager
+===
+문제 4
+0. 확인
+   kubectl get deploy -n priority
+   kubectl get pc
+1. 검색: pod priority
+2. kubectl create priorityclass high-priority --value=999
+3. kubectl patch deployment busybox-logger -n priority -p '{"spec": {"template": {"spec": {"priorityClassName": "high-priority"}}}}'
+   = kubectl edit deploy busybox-logger -n priority
+   priorityClassName: high-priority(dnspolicy 밑에)
+ (kubectl get deploy -n priority -o wide)   
+5. kubectl get deploy -n priority -o yaml | grep -i priorityclass
+===
+문제 5
+1. 검색: storage class
+2. 확인: kubectl get sc
+3. vi sc.yaml(8줄)- name, provisioner, is-default-class 수정
+4. kubectl apply -f sc.yaml
+5. kubectl get sc local-path -o yaml
+===
+문제 5 변형
+if not "storage class = local-path"
+예를 들어 local-kiddie
+1. 검색: storage class
+2. 확인: kubectl get sc
+3. vi sc.yaml(8줄)
+4. kubectl apply -f sc.yaml
+5. kubectl get sc
+6. kubectl edit sc local-path
+   is-default-class: "false"
+7. kubectl get sc
+
+확인: kubectl get sc local-path
+===
+문제 6
+1. 헬름 리포지터리 추가
+   helm repo add argo https://argoproj.github.io/argo-helm
+2. 헬름 리포지터리 업데이트
+   helm repo update
+3. argo 추가여부 확인
+   helm repo list
+4. 야물 파일 생성
+   helm template argocd argo/argo-cd --version 7.7.3 \
+   -n argocd --set crds.install=false > ~/argo-helm.yaml
+확인 cat argo-helm.yaml
+===
+문제 7
+0. kubectl get ns mariadb
+   kubectl get pv -n mariadb
+   kubectl get deploy -n mariadb
+1. 검색: pvc (kind: persist 탐색 후 4번째)(mountpath: 2번째)
+2. vi pvc.yaml(12줄)
+3. kubectl apply -f pvc.yaml
+4. kubectl get pvc -n mariadb
+5. ls mariadb-deployment.yaml
+6. vi mariadb-deployment.yaml
+   6줄 복사 후 수정
+확인
+- kubectl get deploy -n mariadb
+- kubectl describe deploy mariadb -n mariadb \
+  | grep -i claimname
+===
+문제8
+1. 검색: gateway api(2번째 박스)
+2. kubectl get secret (secret 이름 확인)
+3. vi gateway-api.yaml
+4. kubectl apply -f gateway-api.yaml
+5. vi http-route.yaml
+6. kubectl apply -f http-route.yaml
+확인
+kubectl get httproute
+kubectl get gateway web-gateway
+추가
+kubectl get ing web
+kubectl delete ing web
+kubectl get ing web
+===
+문제 9
+Calico 설치
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.2/manifests/tigera-operator.yaml
+
+
+확인
+kubectl get pods -n kube-system
+---
+Flannel 설치
+kubectl apply -f https://github.com/flannel-io/flannel/releases/download/v0.26.1/kube-flannel.yml
+
+확인
+kubectl get po -n kube-flannel
+===
+문제 10
+1. 검색: pod resource(3번째 박스)
+2. kubectl get deploy 
+3. kubectl scale deployment wordpress --replicas=0
+4. kubectl get deploy
+5. kubectl get node: 노드이름 확인
+6. kubectl describe node node01: CPU & Memory 확인
+7. 계산: 파드 3개로 나누어 계산, 컨테이너 2개로 나누어 계산
+8. kubectl edit deployment wordpress
+---
+8번 대안 1
+kubectl patch deployment wordpress \
+-p '{"spec": {"template": {"spec": {"initContainers": \
+[{ "init-wordpress", "resources": \
+{"requests": {"cpu": "1000m", "memory": "1Gi"}}}\]}}}}'
+8번 대안 2
+kubectl patch deployment wordpress \
+-p '{"spec": {"template": {"spec": {"Containers": \
+[{ "init-wordpress", "resources": \
+{"requests": {"cpu": "1000m", "memory": "1Gi"}}}\]}}}}'
+9. kubectl scale deployment wordpress --replicas=3
+10. kubectl get deploy wordpress
+===
+문제 11
+1. ls
+2. sudo dpkg -i cri-dockerd_0.3.9.3-0.ubuntu-focal_amd64.deb
+3. sudo systemctl status cri-docker.socket
+4. sudo systemctl start cri-docker.socket
+   sudo systemctl enable cri-docker.socket
+   -> sudo systemctl enable --now cri-docker.socket
+5. 검색: container runtime(결과: /etc/sysctl.d/k8s.conf)\
+6. sudo vi /etc/sysctl.d/k8s.conf
+7. sudo sysctl --system
+확인 cat /etc/sysctl.conf
+===
+문제 12
+1. kubectl get crd | grep cert
+2. kubectl get crd | grep cert > custom-crd.txt
+3. cat custom-crd.txt
+4. kubectl get crd | grep cert
+5. kubectl get crd certificates.cert-manager.io
+6. kubectl get crd certificates.cert-manager.io -o jsonpath\
+   ={.spec.versions[*].schema.openAPIV3Schema.\
+   properties.spec.properties.subject} 
+7. kubectl get crd certificates.cert-manager.io -o jsonpath\
+   ={.spec.versions[*].schema.openAPIV3Schema.\
+   properties.spec.properties.subject} \
+   > cert-manager-subject.txt
+===
+문제 K7
+1. 검색: ingress
+2. kubectl get deploy echoserver-deployment -n echo-sound
+3. kubectl expose deploy echoserver-deployment -n echo-sound \
+   --name=echo-service --port=8080 --target-port=8080 \
+   --type=NodePort 
+4. kubectl get svc -n echo-sound (이름, 타입)
+5. vi ing.yaml
+6. kubectl apply -f ing.yaml
+7. kubectl get ing -n echo-sound
+8. kubectl get node -o wide (노드 주소)
+   kubectl get svc -n echo-sound (포트 번호)
+9. NODE_IP=172.30.2.2
+   NODE_PORT=32558
+10. curl -o /dev/null -s -w “%{http_code}\n” http://example.org/echo
+11. curl -o /dev/null -s -w “%{http_code}\n” -H “Host: \
+    example.org” http://${NODE_IP}:{$NODE_PORT}/echo
+결과: 200
+===
+문제 K9
+1. 검색: netpol
+2. kubectl get deploy -n backend
+   kubectl get deploy -n backend --show-labels
+   kubectl get deploy -n frontend
+   kubectl get deploy -n frontend --show-labels
+   kubectl get pod -n frontend --show-labels
+3. vi netpol.yaml
+4. kubectl apply -f netpol.yaml
+5. kubectl get netpol -n backend
+===
+문제 K14
+1. kubectl get node
+2. crictl ps | grep kube-apiserver
+3. cd /etc/kubernetes/manifests
+4. ls kube-apiserver.yaml
+5. vi kube-apiserver.yaml
+   (etcd-servers=https://127.0.0.1:2380 -> 2379)
+6. kubectl get nodes <- 시간 지난 후
+===
+문제 K15
+1. 검색: taint
+2. kubetcl get node
+   kubectl describe node | grep -i taint
+3. kubectl taint node node01 IT=Kiddie:NoSchedule
+4. kubectl describe node | grep -i taint
+5. kubectl run nginx1 --image=nginx <- 파드 실행 확인(Pending)
+6. kubectl run nginx2 --image=nginx --dry-run=client \
+   -o yaml > taint.yaml
+7. vi taint.yaml(tolerations 포함 5줄 + nodeName)
+8. kubectl apply -f taint.yaml
+확인: kubectl get pod
+===
+문제 K17
+1. 디플로이먼트, 컨피그맵, 시크릿, 서비스 확인
+   kubectl get deploy -n nginx-static
+   kubectl get cm -n nginx-static
+   kubectl get secret -n nginx-static
+   kubectl get svc -n nginx-static
+2. IP 주소 및 호스트 이름 저장
+   sudo echo '확인주소 ITKiddie.kid.local' >> /etc/hosts
+   sudo echo '10.99.24.60 ITKiddie.k8s.local' >> /etc/hosts
+3. cat /etc/hosts
+4. 컨피그맵 야물파일 생성
+kubectl get cm nginx-config -n nginx-static -o yaml > cm.yaml
+5. 컨피그맵 야물파일 수정
+   vi cm.yaml
+   - 대구분 data > ssl-protocols > TLSv1.2 삭제
+   - 대구분 metadata > TLSv1.2 삭제
+6. 컨피그맵 적용
+   kubectl replace --force -f cm.yaml
+   기존 리소스를 강제로 삭제, 야물파일 정의 새 리소스로 대체
+7. 컨피그맵 적용되도록 디플로이먼트 재시작
+kubectl rollout restart deploy nginx-static -n nginx-static
+8. 문제 확인
+   curl --tls-max 1.2 https://ITKIddie.k8s.local -k
+		(version error)
+   curl --tlsv1.3 https://ITKiddie.k8s.local -k
+        (200)
+===
+9. 디플로이먼트 야물 파일 생성
+   kubectl get deploy nginx-static -n nginx-static \
+   -o yaml > deploy.yaml
+
+10. 기존 디플로이먼트 삭제
+   kubectl delete deploy nginx-static -n nginx-static --force
+
+11. 야물파일로 디플로이먼트 적용
+   kubectl apply -f deploy.yaml
+   kubectl get deploy -n nginx-static
+
+12. 문제 확인
+   curl --tls-max 1.2 https://ITKIddie.k8s.local -k
+		(version error)
+   curl --tlsv1.3 https://ITKiddie.k8s.local -k
+        (200)
+		
+
+
+
+
+
+
+
+
+
+
+   
