@@ -1,0 +1,8 @@
+master, worker-1, worker-2
+echo '===== [2-2] Swap 비활성화 ====='
+sudo swapoff -a
+sudo sed -i '/ swap / s/^/#/' /etc/fstab
+=====
+worker-1, worker-2
+sudo systemctl restart containerd
+sudo systemctl restart kubelet
